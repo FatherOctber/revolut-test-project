@@ -11,14 +11,20 @@
     <modules>
         <module>moneytransfer</module>
         <module>rest-launcher</module>
+        <module>db-adapter</module>
     </modules>
 
     <properties>
-        <junit.version>4.12</junit.version>
-        <spock.version>1.1-groovy-2.4</spock.version>
+        <scalatest.version>3.0.5</scalatest.version>
         <scala.version>2.12.4</scala.version>
         <scalatra.version>2.6.3</scalatra.version>
         <slf4j.version>1.7.25</slf4j.version>
+        <logback.version>1.2.3</logback.version>
+        <jedis.version>2.9.0</jedis.version>
+        <firebase.version>6.0.0</firebase.version>
+        <guice.version>4.2.0</guice.version>
+        <cglib.version>3.2.6</cglib.version>
+        <commons-lang3.version>3.2</commons-lang3.version>
     </properties>
 
     <dependencyManagement>
@@ -29,14 +35,57 @@
                 <version>${scala.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest_2.12</artifactId>
+                <version>${scalatest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.5</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.scalatra</groupId>
                 <artifactId>scalatra_2.12</artifactId>
                 <version>${scalatra.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.scalatra</groupId>
+                <artifactId>scalatra-json_2.12</artifactId>
+                <version>${scalatra.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scalatra</groupId>
                 <artifactId>scalatra-scalate_2.12</artifactId>
                 <version>${scalatra.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json4s</groupId>
+                <artifactId>json4s-jackson_2.12</artifactId>
+                <version>3.6.0-M2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-scala_2.12</artifactId>
+                <version>2.9.2</version>
+            </dependency>
+            <!-- persistence dependency -->
+            <dependency>
+                <groupId>com.google.firebase</groupId>
+                <artifactId>firebase-admin</artifactId>
+                <version>${firebase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -59,6 +108,11 @@
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-webapp</artifactId>
                 <version>9.2.8.v20150217</version>
@@ -69,21 +123,20 @@
                 <version>3.0.0.v201112011016</version>
             </dependency>
             <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>${cglib.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.spockframework</groupId>
-                <artifactId>spock-core</artifactId>
-                <version>${spock.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.spockframework</groupId>
-                <artifactId>spock-spring</artifactId>
-                <version>${spock.version}</version>
+                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

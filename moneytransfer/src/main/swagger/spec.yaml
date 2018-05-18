@@ -1,0 +1,223 @@
+swagger: "2.0"
+info:
+  title: Revolut Test Rest API
+  version: "0.1"
+  description: Money Transfer API specification.
+host: revolut-api.com
+basePath: /v1
+
+schemes:
+  - https
+
+paths:
+
+  /accounts/create:
+    post:
+      operationId: createAccount
+      description: Create new Account
+      tags:
+        - accounts
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Account identification parameters
+          required: true
+          schema:
+            type: object
+            required:
+              - accountNumber
+              - client
+            properties:
+              accountNumber:
+                type: string
+              client:
+                $ref: "#/definitions/Client"
+              balance:
+                $ref: "#/definitions/Balance"
+      responses:
+        200:
+          description: Account created
+          schema:
+            required:
+              - accountId
+              - link
+            properties:
+              accountId:
+                type: string
+              link:
+                type: string
+        400:
+            description: Account cant be created. See logs
+
+  /accounts/{accountNumber}:
+    get:
+      operationId: getAccountByNumber
+      description: Get Account by number
+      tags:
+        - accounts
+      produces:
+        - application/json
+      parameters:
+        - $ref: "#/parameters/accountNumber"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Account"
+        404:
+          description: Account does not exist or has been deleted
+
+  /accounts/{accountNumber}/topup:
+    post:
+      operationId: topupAccount
+      description: Topup target account from partner account
+      tags:
+        - transaction
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: "#/parameters/accountNumber"
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/Transaction"
+          required: true
+      responses:
+        200:
+          description: Topup successful
+        400:
+          description: Requested operation could not be performed. For detailed problem description refer to response body.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        404:
+          description: Account not found
+
+  /accounts/{accountNumber}/withdraw:
+    post:
+      operationId: withdrawAccount
+      description: Withdraw account
+      tags:
+        - transaction
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: "#/parameters/accountNumber"
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/Transaction"
+          required: true
+      responses:
+        200:
+          description: Withdrawal successful
+        400:
+          description: Requested operation could not be performed. For detailed problem description refer to response body.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        404:
+          description: Wallet not found
+
+parameters:
+  accountNumber:
+    in: path
+    name: accountNumber
+    description: Account Number
+    type: string
+    required: true
+
+
+definitions:
+  Account:
+    type: object
+    required:
+      - number
+    properties:
+      number:
+        type: string
+      client:
+        $ref: "#/definitions/Client"
+      balance:
+        $ref: "#/definitions/Balance"
+      status:
+        $ref: "#/definitions/AccountStatus"
+
+  AccountStatus:
+    type: string
+    enum:
+      - active
+      - closed
+
+  Balance:
+    type: object
+    required:
+      - amount
+      - currency
+    properties:
+      amount:
+        type: number
+      currency:
+        type: string
+        pattern: "[A-Z]{3}"
+
+  Transaction:
+    type: object
+    required:
+      - partnerAccount
+      - amount
+      - currency
+    properties:
+      partnerAccount:
+        type: string
+      amount:
+        type: number
+      currency:
+        type: string
+        pattern: "[A-Z]{3}"
+
+  Client:
+    type: object
+    required:
+      - uid
+    properties:
+      name:
+        type: string
+      uid:
+        type: number
+      address:
+        $ref: "#/definitions/Address"
+
+  Address:
+    type: object
+    required:
+      - index
+    properties:
+      index:
+        type: number
+      country:
+        type: string
+      city:
+        type: string
+      street:
+        type: string
+
+
+  ErrorResponse:
+    type: object
+    required:
+      - code
+    properties:
+      code:
+        description: Error code
+        type: number
+      message:
+        description: Detailed error message
+        type: string
+
