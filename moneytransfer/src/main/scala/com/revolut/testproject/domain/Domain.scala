@@ -3,7 +3,8 @@ package com.revolut.testproject.domain
 import com.fasterxml.jackson.annotation.{JsonInclude, JsonProperty}
 
 object Domain {
-  val domainPrefix = "accounts:"
+  val accountDomain = "accounts:"
+  val exrateDomain = "exrate:"
 
   abstract class DomainModel
 
@@ -22,24 +23,30 @@ object Domain {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   case class Transaction(@JsonProperty(required = true) partnerAccount: String, @JsonProperty(required = true) amount: BigDecimal, @JsonProperty(required = true) currency: String) extends DomainModel
 
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  case class ExchangeRate(baseCurrency: String, conversionRates: Set[ConversionRate]) extends DomainModel
+
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  case class ConversionRate(toCurrency: String, rate: BigDecimal) extends DomainModel
+
   object Status {
     val statuses = Set("Active", "Closed")
 
-    def check(status: String): Boolean = statuses.contains(status)
+    def check(status: String): Boolean = statuses(status)
 
     def active() = statuses.head
 
-    def closed() = statuses.tail
+    def closed() = statuses.tail.head
   }
 
   object Currency {
     val currencies = Set("RUR", "USD")
 
-    def check(currency: String): Boolean = currencies.contains(currency)
+    def check(currency: String): Boolean = currencies(currency)
 
     def rur() = currencies.head
 
-    def usd() = currencies.tail
+    def usd() = currencies.tail.head
   }
 
 }

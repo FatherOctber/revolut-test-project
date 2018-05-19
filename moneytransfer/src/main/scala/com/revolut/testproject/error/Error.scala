@@ -10,7 +10,7 @@ object Error {
 
   val errorHandling: PartialFunction[Throwable, Any] = {
     case e: IncorrectTransactionException => Response.BadRq(ErrorResponse(transactionError._1, e.getMessage).toString)
-    case e => Response.GeneralError
+    case e => Response.GeneralError()
   }
 
   case class ErrorResponse(code: Long, msg: String) {

@@ -1,13 +1,14 @@
 package com.revolut.testproject
 
-import org.scalatra.{BadRequest, InternalServerError, Ok}
+import org.scalatra._
 
 object Response {
   val headers = Map("Content-Type" -> "application/json",
     "Accept" -> "application/json")
 
-  val Okey = () => Ok("", headers)
-  val Success = (json: String) => Ok(json, headers)
-  val BadRq = (json: String) => BadRequest(json, headers)
+  val Okay = () => Ok("", headers)
+  val Success = (body: Any) => Ok(body, headers)
+  val BadRq = (body: Any) => BadRequest(body, headers)
   val GeneralError = () => InternalServerError("", headers)
+  val RequestedNotFound = () => NotFound("", headers)
 }

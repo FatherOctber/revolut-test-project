@@ -2,7 +2,7 @@ package com.revolut.testproject.moneytransfer
 
 import com.google.inject.Inject
 import com.revolut.testproject.dbadapter.utils.SerializationUtil
-import com.revolut.testproject.domain.{AccountService, Domain}
+import com.revolut.testproject.domain.{AccountService, Domain, ExchangeRateService}
 import com.revolut.testproject.error.Error.ErrorResponse
 import com.revolut.testproject.error.Error
 import com.revolut.testproject.Response
@@ -11,13 +11,14 @@ import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.Try
 
-class AccountController @Inject()(accountService: AccountService) extends ScalatraServlet {
+class AccountController @Inject()(accountService: AccountService, exchangeRateService: ExchangeRateService) extends ScalatraServlet {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   def routeAddress(): String = "/accounts/*"
 
   override def init(): Unit = {
     super.init()
+    exchangeRateService.setupRates()
     logger.info("Account controller started")
   }
 
@@ -30,7 +31,7 @@ class AccountController @Inject()(accountService: AccountService) extends Scalat
     logger.info("Get >> get")
     val number = params.getOrElse("accountNumber", "null")
     val account = accountService.getAccount(number)
-    Response.Success(new String(SerializationUtil.toJson(account)))
+    if (account != null) Response.Success(SerializationUtil.toJson(account)) else Response.RequestedNotFound()
   }
 
   post("/create") {
@@ -42,7 +43,7 @@ class AccountController @Inject()(accountService: AccountService) extends Scalat
       case Some(account) => {
         try {
           accountService.saveAccount(account)
-          Response.Okey()
+          Response.Okay()
         } catch Error.errorHandling
       }
       case None => Response.BadRq(ErrorResponse(Error.serializationError._1, "Can`t read account").toString)
@@ -59,15 +60,15 @@ class AccountController @Inject()(accountService: AccountService) extends Scalat
       case Some(transaction) => {
         try {
           accountService.topup(targetNumber, transaction)
-          Response.Okey()
+          Response.Okay()
         } catch Error.errorHandling
       }
       case None => Response.BadRq(ErrorResponse(Error.serializationError._1, "Can`t read transaction").toString)
     }
   }
 
-  post("/:accountNumber/withdrawal") {
-    logger.info("POST >> withdrawal")
+  post("/:accountNumber/withdraw") {
+    logger.info("POST >> withdraw")
     val body = request.body
     val sourceNumber = params.getOrElse("accountNumber", "null")
 
@@ -76,7 +77,7 @@ class AccountController @Inject()(accountService: AccountService) extends Scalat
       case Some(transaction) => {
         try {
           accountService.withdraw(sourceNumber, transaction)
-          Response.Okey()
+          Response.Okay()
         } catch Error.errorHandling
       }
       case None => Response.BadRq(ErrorResponse(Error.serializationError._1, "Can`t read transaction").toString)

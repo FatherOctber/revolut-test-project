@@ -4,15 +4,18 @@ import java.time.Duration
 
 import com.google.inject.{AbstractModule, Guice, TypeLiteral}
 import com.revolut.testproject.dbadapter.{Persistence, RedisAdapter}
+import com.revolut.testproject.domain.{AccountService, AccountServiceImpl, ExchangeRateService, ExchangeRateServiceImpl}
 import redis.clients.jedis.{JedisPool, JedisPoolConfig}
 
 object Injection {
 
-  class RedisPersistenceModule extends AbstractModule {
+  class MoneyTransferModule extends AbstractModule {
     override def configure(): Unit = {
       val jedisPool = new JedisPool(buildPoolConfig(), "localhost")
       val redisAdapter = new RedisAdapter(jedisPool)
       bind(new TypeLiteral[Persistence[Array[Byte], Array[Byte]]] {}).toInstance(redisAdapter)
+      bind(new TypeLiteral[AccountService] {}).to(classOf[AccountServiceImpl])
+      bind(new TypeLiteral[ExchangeRateService] {}).to(classOf[ExchangeRateServiceImpl])
     }
 
     private def buildPoolConfig(): JedisPoolConfig = {
@@ -31,5 +34,5 @@ object Injection {
     }
   }
 
-  def injector = Guice.createInjector(new RedisPersistenceModule)
+  def injector = Guice.createInjector(new MoneyTransferModule)
 }

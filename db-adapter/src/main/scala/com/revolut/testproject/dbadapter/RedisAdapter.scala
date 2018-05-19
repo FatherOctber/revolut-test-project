@@ -18,11 +18,11 @@ class RedisAdapter @Inject()(connectionPool: JedisPool) extends Persistence[Arra
       jedis.set(key, data)
     } catch {
       case e: Exception => {
-        logger.info("error set data to Redis:", e)
+        logger.error("error set data to Redis:", e)
         throw e
       }
     } finally {
-      jedis.close()
+      if (jedis != null) jedis.close()
     }
   }
 
@@ -34,11 +34,11 @@ class RedisAdapter @Inject()(connectionPool: JedisPool) extends Persistence[Arra
       jedis.get(key)
     } catch {
       case e: Exception => {
-        logger.info("error get data from Redis:", e)
+        logger.error("error get data from Redis:", e)
         throw e
       }
     } finally {
-      jedis.close()
+      if (jedis != null) jedis.close()
     }
   }
 
@@ -64,7 +64,7 @@ class RedisAdapter @Inject()(connectionPool: JedisPool) extends Persistence[Arra
     } catch {
       case e: Exception => throw e
     } finally {
-      jedis.close()
+      if (jedis != null) jedis.close()
     }
 
   }

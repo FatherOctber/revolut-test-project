@@ -12,6 +12,7 @@
         <module>moneytransfer</module>
         <module>rest-launcher</module>
         <module>db-adapter</module>
+        <module>integration-test</module>
     </modules>
 
     <properties>
