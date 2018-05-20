@@ -23,5 +23,4 @@ object Launcher {
     server.setHandler(context)
     server
   }
-
 }

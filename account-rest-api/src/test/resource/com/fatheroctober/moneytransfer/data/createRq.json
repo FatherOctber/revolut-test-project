@@ -1,0 +1,10 @@
+{
+  "number": "petr1",
+  "client": {
+    "name": "Petr"
+  },
+  "balance": {
+    "amount": 7000.0,
+    "currency": "RUR"
+  }
+}

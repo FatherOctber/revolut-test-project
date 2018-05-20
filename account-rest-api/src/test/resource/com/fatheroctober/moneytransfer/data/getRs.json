@@ -1,0 +1,1 @@
+{"number":"test1","client":{"name":"Bob","address":{"country":"Eng","city":"London","street":"Covent Garden","index":123456}},"balance":{"amount":100,"currency":"RUR"},"status":"Active"}
