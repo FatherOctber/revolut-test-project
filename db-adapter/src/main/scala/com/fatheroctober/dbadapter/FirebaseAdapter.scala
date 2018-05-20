@@ -20,15 +20,9 @@ class FirebaseAdapter(dbUrl: String) extends Persistence[String, String] {
     this
   }
 
-  override def <<(key: String, data: String): Unit = {
-    val firebase = FirebaseDatabase.getInstance()
-  }
+  override def <<(key: String, data: String): Unit = ??? // todo implementation
 
-  override def >>(key: String): String = {
-    val firebase = FirebaseDatabase.getInstance()
-    val ref = firebase.getReference(key)
-    null
-  }
+  override def >>(key: String): String = ??? // todo implementation
 
-  override def update(compare: (String) => String, key: String): Unit = ???
+  override def update(compare: (String) => String, key: String): Unit = ??? // todo implementation
 }

@@ -9,6 +9,7 @@ object Error {
 
   val errorHandling: PartialFunction[Throwable, Any] = {
     case e: IncorrectTransactionException => Response.BadRq(ErrorResponse(transactionError._1, e.getMessage).toString)
+    case e: AccountNotFoundException => Response.DataNotFound(ErrorResponse(transactionError._1, e.getMessage).toString)
     case e => Response.GeneralError()
   }
 

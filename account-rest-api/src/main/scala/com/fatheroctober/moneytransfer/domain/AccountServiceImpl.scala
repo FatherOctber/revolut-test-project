@@ -3,7 +3,7 @@ package com.fatheroctober.moneytransfer.domain
 import com.fatheroctober.moneytransfer.StorageKeeper
 import com.fatheroctober.moneytransfer.StorageKeeper.Key
 import com.fatheroctober.moneytransfer.domain.Domain._
-import com.fatheroctober.moneytransfer.error.IncorrectTransactionException
+import com.fatheroctober.moneytransfer.error.{AccountNotFoundException, IncorrectTransactionException}
 import com.google.inject.Inject
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -24,14 +24,18 @@ case class AccountServiceImpl @Inject()(dbJockey: StorageKeeper.PersistenceJocke
 
     val creditTarget = (actualRaw: Array[Byte]) => {
       val actualAccount = StorageKeeper.assembleAccount(actualRaw)
-      val updAccount = updateBalance(actualAccount, transaction, isCredit = true)
-      StorageKeeper.disassemble(updAccount)
+      if (actualAccount != null) {
+        val updAccount = updateBalance(actualAccount, transaction, isCredit = true)
+        StorageKeeper.disassemble(updAccount)
+      } else throw AccountNotFoundException("Credit account not found")
     }
 
     val debitSource = (actualRaw: Array[Byte]) => {
       val actualAccount = StorageKeeper.assembleAccount(actualRaw)
-      val updAccount = updateBalance(actualAccount, transaction, isCredit = false)
-      StorageKeeper.disassemble(updAccount)
+      if (actualAccount != null) {
+        val updAccount = updateBalance(actualAccount, transaction, isCredit = false)
+        StorageKeeper.disassemble(updAccount)
+      } else throw AccountNotFoundException("Debit account not found")
     }
     val credit = () => {
       implicit val targetKey = Key(accountDomain + targetAccount)

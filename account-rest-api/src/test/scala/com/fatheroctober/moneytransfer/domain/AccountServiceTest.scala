@@ -4,6 +4,7 @@ import java.nio.ByteBuffer
 
 import com.fatheroctober.dbadapter.Persistence
 import com.fatheroctober.moneytransfer.domain.Domain.{Currency, Transaction}
+import com.fatheroctober.moneytransfer.error.{AccountNotFoundException, IncorrectTransactionException}
 import com.fatheroctober.moneytransfer.{StorageKeeper, TestBase}
 import org.mockito.{ArgumentMatchers, Mockito}
 import org.scalatest.mockito.MockitoSugar
@@ -17,6 +18,8 @@ class AccountServiceTest extends FeatureSpec with GivenWhenThen with BeforeAndAf
   var exRateService: ExchangeRateService = null
   var storage: StorageKeeper.PersistenceJockey = null
   var accountService: AccountService = null
+
+  info("Account service unit tests")
 
   before {
     Mockito.when(dbMock << (ArgumentMatchers.any(classOf[Array[Byte]]), ArgumentMatchers.any(classOf[Array[Byte]])))
@@ -120,6 +123,34 @@ class AccountServiceTest extends FeatureSpec with GivenWhenThen with BeforeAndAf
       Then("compare result")
       assert(resCredit.balance.amount == target.balance.amount + 20)
       assert(resDibit.balance.amount == source.balance.amount - (20 * rurToUsdRate))
+    }
+
+    scenario("not found account exception") {
+      Given("init invalid transaction data")
+      val transactionRequest = Transaction("123456", BigDecimal(20), Currency.rur())
+
+      When("topup for unknown account")
+      val caught =
+        intercept[AccountNotFoundException] {
+          accountService.topup("5432", transactionRequest)
+        }
+
+      Then("compare result")
+      assert(caught.msg == "Credit account not found")
+    }
+
+    scenario("target account equals partner exception") {
+      Given("init one-account transaction data")
+      val transactionRequest = Transaction("123456", BigDecimal(20), Currency.rur())
+
+      When("topup for unknown account")
+      val caught =
+        intercept[IncorrectTransactionException] {
+          accountService.topup("123456", transactionRequest)
+        }
+
+      Then("compare result")
+      assert(caught.msg == "Target account equals partner")
     }
   }
 }

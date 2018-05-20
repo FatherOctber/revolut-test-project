@@ -11,4 +11,5 @@ object Response {
   val BadRq = (body: Any) => BadRequest(body, headers)
   val GeneralError = () => InternalServerError("", headers)
   val RequestedNotFound = () => NotFound("", headers)
+  val DataNotFound = (body: Any) => NotFound(body, headers)
 }

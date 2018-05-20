@@ -4,18 +4,21 @@ import java.time.Duration
 
 import com.fatheroctober.dbadapter.{Persistence, RedisAdapter}
 import com.fatheroctober.moneytransfer.domain.{AccountService, AccountServiceImpl, ExchangeRateService, ExchangeRateServiceImpl}
-import com.google.inject.{AbstractModule, Guice, TypeLiteral}
+import com.google.inject.{AbstractModule, Guice, Singleton, TypeLiteral}
+import org.slf4j.LoggerFactory
 import redis.clients.jedis.{JedisPool, JedisPoolConfig}
 
 object Injection {
 
-  class MoneyTransferModule(redisPort: Int = 6379) extends AbstractModule {
-    override def configure(): Unit = {
-      val jedisPool = new JedisPool(buildPoolConfig(), "localhost", redisPort)
-      val redisAdapter = new RedisAdapter(jedisPool)
-      bind(new TypeLiteral[Persistence[Array[Byte], Array[Byte]]] {}).toInstance(redisAdapter)
-      bind(new TypeLiteral[AccountService] {}).to(classOf[AccountServiceImpl])
-      bind(new TypeLiteral[ExchangeRateService] {}).to(classOf[ExchangeRateServiceImpl])
+  @Singleton
+  case class RedisPoolFuel(port: Int) extends ShutdownResource {
+    val logger = LoggerFactory.getLogger(getClass)
+    val redisPool = new JedisPool(buildPoolConfig(), "localhost", port)
+
+    override def shutdown(): Unit = {
+      logger.info("Shutdown redis connection pool")
+      redisPool.close()
+      redisPool.destroy()
     }
 
     private def buildPoolConfig(): JedisPoolConfig = {
@@ -31,6 +34,19 @@ object Injection {
       poolConfig.setNumTestsPerEvictionRun(3)
       poolConfig.setBlockWhenExhausted(true)
       poolConfig
+    }
+  }
+
+
+  class MoneyTransferModule(redisPort: Int = 6379) extends AbstractModule {
+    override def configure(): Unit = {
+      val shutdownResource = RedisPoolFuel(redisPort)
+      val jedisPool = shutdownResource.redisPool
+      val redisAdapter = new RedisAdapter(jedisPool)
+      bind(new TypeLiteral[ShutdownResource] {}).toInstance(shutdownResource)
+      bind(new TypeLiteral[Persistence[Array[Byte], Array[Byte]]] {}).toInstance(redisAdapter)
+      bind(new TypeLiteral[AccountService] {}).to(classOf[AccountServiceImpl])
+      bind(new TypeLiteral[ExchangeRateService] {}).to(classOf[ExchangeRateServiceImpl])
     }
   }
 

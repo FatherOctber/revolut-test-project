@@ -45,11 +45,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/test/resource</directory>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

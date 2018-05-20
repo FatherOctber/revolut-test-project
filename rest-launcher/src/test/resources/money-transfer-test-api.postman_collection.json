@@ -1,0 +1,234 @@
+{
+	"info": {
+		"_postman_id": "afe069af-84e7-4d8a-aa65-e12d9f352af2",
+		"name": "Money-Transfer test api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create account Petr",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"number\": \"petrNum400\",\r\n  \"client\": {\r\n  \t\"name\": \"Petr\"\r\n  },\r\n  \"balance\": {\r\n  \t\"amount\": 300.0,\r\n  \t\"currency\": \"RUR\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "{{API_URL}}/accounts/create",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"accounts",
+						"create"
+					]
+				},
+				"description": "Create new account"
+			},
+			"response": []
+		},
+		{
+			"name": "create account Vasya",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"number\": \"vasyaNum300\",\r\n  \"client\": {\r\n  \t\"name\": \"Vasya\"\r\n  },\r\n  \"balance\": {\r\n  \t\"amount\": 100.0,\r\n  \t\"currency\": \"RUR\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "{{API_URL}}/accounts/create",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"accounts",
+						"create"
+					]
+				},
+				"description": "Create new account"
+			},
+			"response": []
+		},
+		{
+			"name": "get account Petr",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"numbefeer\": \"testNum123\"\r\n}"
+				},
+				"url": {
+					"raw": "{{API_URL}}/accounts/petrNum400",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"accounts",
+						"petrNum400"
+					]
+				},
+				"description": "get account of Petr"
+			},
+			"response": []
+		},
+		{
+			"name": "get account Vasya",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"numbefeer\": \"testNum123\"\r\n}"
+				},
+				"url": {
+					"raw": "{{API_URL}}/accounts/vasyaNum300",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"accounts",
+						"vasyaNum300"
+					]
+				},
+				"description": "get account of Vasya"
+			},
+			"response": []
+		},
+		{
+			"name": "withdraw",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerAccount\": \"vasyaNum300\",\r\n  \"amount\": 60.0,\r\n  \"currency\": \"RUR\"\r\n}"
+				},
+				"url": {
+					"raw": "{{API_URL}}/accounts/petrNum400/withdraw",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"accounts",
+						"petrNum400",
+						"withdraw"
+					]
+				},
+				"description": "withdraw request"
+			},
+			"response": []
+		},
+		{
+			"name": "topup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerAccount\": \"petrNum400\",\r\n  \"amount\": 20.0,\r\n  \"currency\": \"RUR\"\r\n}"
+				},
+				"url": {
+					"raw": "{{API_URL}}/accounts/vasyaNum300/topup",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"accounts",
+						"vasyaNum300",
+						"topup"
+					]
+				},
+				"description": "topup request"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "233301a3-9a9c-4dbc-8aa9-e38652951454",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "60415281-3f83-411d-9c5d-f735192e0a98",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "90197947-5889-49d0-942b-6dabaaf01268",
+			"key": "API_URL",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": ""
+		}
+	]
+}

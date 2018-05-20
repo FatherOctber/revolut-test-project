@@ -1,9 +1,9 @@
 swagger: "2.0"
 info:
-  title: Revolut Test Rest API
+  title: Money Transfer Rest API
   version: "0.1"
   description: Money Transfer API specification.
-host: revolut-api.com
+host: money-transfer-api.com
 basePath: /v1
 
 schemes:
@@ -51,7 +51,9 @@ paths:
               link:
                 type: string
         400:
-            description: Account cant be created. See logs
+            description: Account cant be created. See error message
+            schema:
+             $ref: "#/definitions/ErrorResponse"
 
   /accounts/{accountNumber}:
     get:
@@ -123,7 +125,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
         404:
-          description: Wallet not found
+          description: Account not found
 
 parameters:
   accountNumber:
