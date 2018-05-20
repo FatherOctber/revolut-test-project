@@ -4,8 +4,8 @@
 ## Features:
 	- Adding account to storage
 	- Getting requested account
-	- Topup for requested account
-	- Withdrawal for requested account
+	- Topup for requested account (exhange rate for multicurrency accounts is supported)
+	- Withdrawal for requested account (exhange rate for multicurrency accounts is supported)
 
 ## Persistence:
 :point_right: Redis (implemented)
